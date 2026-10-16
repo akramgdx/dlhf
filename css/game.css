@@ -1,0 +1,376 @@
+/* ==========================================================================
+   DON'T LET HER FALL - Canvas & In-Game Interface Styles
+   ========================================================================== */
+
+.game-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #070b19;
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* ==========================================================================
+   IN-GAME HUD
+   ========================================================================== */
+.game-hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.2rem 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 20;
+  transition: opacity 0.3s ease;
+}
+
+.game-hud.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+}
+
+.hud-level-title {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(188, 167, 248, 0.25);
+}
+
+.hud-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hud-memory-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(13, 19, 43, 0.65);
+  border: 1px solid var(--border-subtle);
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  color: var(--accent-gold);
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hud-icon {
+  width: 16px;
+  height: 16px;
+  filter: drop-shadow(0 0 4px var(--accent-gold));
+}
+
+.hud-right {
+  pointer-events: auto;
+}
+
+.btn-icon {
+  background: rgba(13, 19, 43, 0.65);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+}
+
+.btn-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-icon:hover {
+  background: rgba(28, 38, 77, 0.85);
+  border-color: var(--accent-purple);
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   STORY NARRATIVE BANNER (In-Game Floating Dialogue)
+   ========================================================================== */
+.story-banner {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(8, 12, 28, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-purple);
+  padding: 1.2rem 2rem;
+  border-radius: var(--radius-sm);
+  max-width: 600px;
+  width: 85%;
+  text-align: center;
+  z-index: 25;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(188, 167, 248, 0.15);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.story-banner.hidden {
+  opacity: 0;
+  transform: translate(-50%, -15px);
+  pointer-events: none;
+}
+
+.story-banner-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #f1f0fa;
+  line-height: 1.6;
+  text-shadow: 0 0 10px rgba(188, 167, 248, 0.3);
+  margin-bottom: 0.5rem;
+}
+
+.story-banner-sub {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION (Checkpoints, Collectibles)
+   ========================================================================== */
+.toast-notification {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 19, 43, 0.88);
+  border: 1px solid var(--accent-purple);
+  padding: 0.5rem 1.4rem;
+  border-radius: 20px;
+  color: var(--accent-purple);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  z-index: 25;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 15px var(--accent-glow);
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.toast-notification.hidden {
+  opacity: 0;
+  transform: translate(-50%, 10px);
+}
+
+/* ==========================================================================
+   DESKTOP CONTROLS HINT
+   ========================================================================== */
+.controls-hint {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.2rem;
+  background: rgba(7, 11, 25, 0.6);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  pointer-events: none;
+  z-index: 15;
+  transition: opacity 0.5s ease;
+}
+
+.controls-hint kbd {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  padding: 0.15rem 0.35rem;
+  font-family: inherit;
+  font-size: 0.7rem;
+  color: #fff;
+  margin-right: 0.2rem;
+}
+
+/* ==========================================================================
+   MOBILE TOUCH CONTROLS
+   ========================================================================== */
+.touch-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 22;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 1.5rem 2rem env(safe-area-inset-bottom, 1.5rem) 2rem;
+}
+
+.touch-controls.hidden {
+  display: none;
+}
+
+.touch-group {
+  display: flex;
+  gap: 1.2rem;
+  pointer-events: auto;
+}
+
+.touch-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(20, 27, 60, 0.45);
+  border: 2px solid rgba(188, 167, 248, 0.35);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  backdrop-filter: blur(6px);
+  transition: transform 0.1s ease, background 0.1s ease, border-color 0.1s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.touch-btn svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--text-primary);
+}
+
+.touch-btn:active, .touch-btn.active {
+  background: rgba(188, 167, 248, 0.3);
+  border-color: var(--accent-purple);
+  transform: scale(0.92);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.touch-btn-jump {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(43, 31, 84, 0.55);
+  border-color: rgba(188, 167, 248, 0.5);
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+}
+
+/* ==========================================================================
+   PORTRAIT ROTATE HELPER OVERLAY
+   ========================================================================== */
+.portrait-hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(7, 11, 25, 0.94);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.portrait-hint.hidden {
+  display: none;
+}
+
+.portrait-hint-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  max-width: 320px;
+}
+
+.phone-rotate-icon {
+  font-size: 3rem;
+  animation: rotatePhone 2.2s infinite ease-in-out;
+}
+
+.portrait-hint p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.btn-text-small {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-purple);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+@keyframes rotatePhone {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Hide desktop hint on small / touch devices */
+@media (max-width: 768px), (pointer: coarse) {
+  .controls-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .touch-controls {
+    padding: 1rem 1.2rem;
+  }
+  .touch-btn {
+    width: 58px;
+    height: 58px;
+  }
+  .touch-btn-jump {
+    width: 64px;
+    height: 64px;
+  }
+  .hud-level-title {
+    font-size: 0.85rem;
+  }
+}

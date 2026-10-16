@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Don't Let Her Fall - An emotional, cinematic 2D silhouette platformer. Some distances cannot be crossed.">
+  <meta name="theme-color" content="#070b19">
+  <title>Don't Let Her Fall — An Emotional 2D Platformer</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+  <!-- Main Container -->
+  <div id="app-container" class="app-container">
+    
+    <!-- Canvas Viewport -->
+    <div id="game-wrapper" class="game-wrapper">
+      <canvas id="game-canvas"></canvas>
+      
+      <!-- In-Game Narrative Overlay Banner -->
+      <div id="story-banner" class="story-banner hidden">
+        <p id="story-banner-text" class="story-banner-text"></p>
+        <span class="story-banner-sub">Press Space or Tap to continue</span>
+      </div>
+
+      <!-- In-Game HUD -->
+      <div id="game-hud" class="game-hud hidden">
+        <div class="hud-left">
+          <span id="hud-level-title" class="hud-level-title">Level 1 — The Beginning</span>
+        </div>
+        <div class="hud-center">
+          <div id="hud-memory-indicator" class="hud-memory-indicator" title="Memory Fragment">
+            <svg class="hud-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+            </svg>
+            <span id="hud-memory-count">0 / 1</span>
+          </div>
+        </div>
+        <div class="hud-right">
+          <button id="btn-hud-pause" class="btn-icon" aria-label="Pause Game" title="Pause (Esc)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+              <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Level Toast / Checkpoint Notification -->
+      <div id="toast-notification" class="toast-notification hidden">
+        <span id="toast-text">Checkpoint Reached</span>
+      </div>
+
+      <!-- On-Screen Mobile Touch Controls -->
+      <div id="touch-controls" class="touch-controls hidden">
+        <div class="touch-group touch-left-group">
+          <button id="touch-left" class="touch-btn" aria-label="Move Left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button id="touch-right" class="touch-btn" aria-label="Move Right">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+        <div class="touch-group touch-right-group">
+          <button id="touch-jump" class="touch-btn touch-btn-jump" aria-label="Jump">
+            <span>JUMP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Keyboard Controls Helper Pill -->
+      <div id="controls-hint" class="controls-hint">
+        <span><kbd>A</kbd><kbd>D</kbd> or <kbd>&larr;</kbd><kbd>&rarr;</kbd> Move</span>
+        <span><kbd>Space</kbd> or <kbd>W</kbd> Jump</span>
+        <span><kbd>R</kbd> Restart</span>
+        <span><kbd>Esc</kbd> Pause</span>
+      </div>
+
+    </div>
+
+    <!-- UI Overlay Screens (Menues, Modals) -->
+    <div id="ui-overlay" class="ui-overlay">
+
+      <!-- MAIN MENU -->
+      <div id="screen-main-menu" class="screen-view active">
+        <div class="menu-content">
+          <header class="game-header">
+            <h1 class="game-title">DON'T LET HER FALL</h1>
+            <p class="game-subtitle">Some distances cannot be crossed.</p>
+          </header>
+
+          <nav class="menu-nav">
+            <button id="btn-new-game" class="menu-btn primary">NEW GAME</button>
+            <button id="btn-continue" class="menu-btn">CONTINUE</button>
+            <button id="btn-level-select" class="menu-btn">LEVEL SELECT</button>
+            <button id="btn-story" class="menu-btn">STORY</button>
+            <button id="btn-settings" class="menu-btn">SETTINGS</button>
+            <button id="btn-credits" class="menu-btn">CREDITS</button>
+          </nav>
+
+          <footer class="menu-footer">
+            <div class="audio-toggle-hint">
+              <button id="btn-quick-mute" class="btn-text-icon">
+                <span id="quick-mute-icon">&#128266;</span>
+                <span id="quick-mute-label">Audio: Enabled</span>
+              </button>
+            </div>
+            <p class="copyright">&copy; 2026 Rahali Akram.</p>
+          </footer>
+        </div>
+      </div>
+
+      <!-- LEVEL SELECT MODAL -->
+      <div id="screen-level-select" class="screen-view hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h2>SELECT CHAPTER</h2>
+            <button class="btn-close" data-close="screen-level-select">&times;</button>
+          </div>
+          <div class="level-grid" id="level-grid">
+            <!-- 10 levels dynamically rendered by ui.js -->
+          </div>
+          <div class="modal-footer">
+            <button class="menu-btn secondary" data-close="screen-level-select">BACK</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORY SCREEN MODAL -->
+      <div id="screen-story" class="screen-view hidden">
+        <div class="modal-card story-card">
+          <div class="modal-header">
+            <h2>THE PREMISE</h2>
+            <button class="btn-close" data-close="screen-story">&times;</button>
+          </div>
+          <div class="story-content">
+            <p class="story-passage">
+              You see her silhouette across the chasms of the world—just beyond the next ridge, standing quietly in the fading twilight.
+            </p>
+            <p class="story-passage">
+              You keep moving. Through crumbling stones, thorns, forgotten forests, and desolate ruins. Every step is an attempt to bridge the gulf that opened between you.
+            </p>
+            <p class="story-passage emphasis">
+              "If I can just reach her, maybe things can be the way they were before."
+            </p>
+            <p class="story-passage">
+              Collect the scattered memory fragments along your journey to uncover the moments that time tried to erase.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button class="menu-btn secondary" data-close="screen-story">RETURN</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS MODAL -->
+      <div id="screen-settings" class="screen-view hidden">
+        <div class="modal-card settings-card">
+          <div class="modal-header">
+            <h2>SETTINGS</h2>
+            <button class="btn-close" data-close="screen-settings">&times;</button>
+          </div>
+          <div class="settings-content">
+            <div class="setting-row">
+              <label for="slider-music">Music Volume</label>
+              <div class="slider-wrapper">
+                <input type="range" id="slider-music" min="0" max="100" value="60">
+                <span id="label-music-vol">60%</span>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <label for="slider-sfx">Sound Effects</label>
+              <div class="slider-wrapper">
+                <input type="range" id="slider-sfx" min="0" max="100" value="70">
+                <span id="label-sfx-vol">70%</span>
+              </div>
+            </div>
+
+            <div class="setting-row toggle-row">
+              <span>Mute All Audio</span>
+              <label class="switch">
+                <input type="checkbox" id="check-mute">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="setting-row toggle-row">
+              <span>Screen Shake Effect</span>
+              <label class="switch">
+                <input type="checkbox" id="check-screenshake" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="setting-row toggle-row">
+              <span>Reduced Motion</span>
+              <label class="switch">
+                <input type="checkbox" id="check-reducedmotion">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="settings-divider"></div>
+
+            <div class="settings-danger-zone">
+              <button id="btn-reset-progress" class="btn-danger">Reset Save Progress</button>
+              <p class="danger-hint">Clears unlocked levels and collected memory fragments.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="menu-btn secondary" data-close="screen-settings">CLOSE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREDITS MODAL -->
+      <div id="screen-credits" class="screen-view hidden">
+        <div class="modal-card credits-card">
+          <div class="modal-header">
+            <h2>CREDITS</h2>
+            <button class="btn-close" data-close="screen-credits">&times;</button>
+          </div>
+          <div class="credits-content">
+            <div class="credit-block">
+              <h3>DON'T LET HER FALL</h3>
+              <p class="role-italic">An Atmospheric Silhouette Narrative Platformer</p>
+            </div>
+            <div class="credit-block">
+              <h4>Game Design & Engineering</h4>
+              <p>Indie Studio Creative Team</p>
+            </div>
+            <div class="credit-block">
+              <h4>Art Direction & Visuals</h4>
+              <p>Procedural Vector Silhouettes, Atmospheric Lighting & Parallax Engine</p>
+            </div>
+            <div class="credit-block">
+              <h4>Audio & Soundscapes</h4>
+              <p>Procedural Dynamic Web Audio Synthesizer Engine</p>
+            </div>
+            <div class="credit-block">
+              <h4>Special Thanks</h4>
+              <p>To everyone who ever tried to hold onto someone slipping away.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="menu-btn secondary" data-close="screen-credits">CLOSE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAUSE MENU -->
+      <div id="screen-pause" class="screen-view hidden">
+        <div class="modal-card pause-card">
+          <div class="modal-header">
+            <h2>PAUSED</h2>
+          </div>
+          <div class="pause-menu-actions">
+            <button id="btn-pause-resume" class="menu-btn primary">RESUME</button>
+            <button id="btn-pause-restart" class="menu-btn">RESTART LEVEL</button>
+            <button id="btn-pause-settings" class="menu-btn">SETTINGS</button>
+            <button id="btn-pause-level-select" class="menu-btn">LEVEL SELECT</button>
+            <button id="btn-pause-main-menu" class="menu-btn secondary">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEVEL COMPLETE INTERSTITIAL -->
+      <div id="screen-level-complete" class="screen-view hidden">
+        <div class="modal-card completion-card">
+          <h3 id="comp-level-num" class="comp-subtitle">CHAPTER I COMPLETED</h3>
+          <h2 id="comp-level-name" class="comp-title">The Beginning</h2>
+          
+          <div class="comp-story-quote">
+            <p id="comp-story-text">"I saw you through the mist. You didn't wave, but you didn't run away."</p>
+          </div>
+
+          <div class="comp-stats">
+            <div class="comp-stat-item">
+              <span class="stat-label">Memories Discovered:</span>
+              <span id="comp-memory-stat" class="stat-value">1 / 1</span>
+            </div>
+          </div>
+
+          <div class="comp-actions">
+            <button id="btn-next-level" class="menu-btn primary">CONTINUE JOURNEY &rarr;</button>
+            <button id="btn-replay-level" class="menu-btn secondary">REPLAY CHAPTER</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL EMOTIONAL ENDING SCREEN -->
+      <div id="screen-ending" class="screen-view hidden">
+        <div class="ending-cinematic-container">
+          <div id="ending-text-sequence" class="ending-text-sequence">
+            <p id="ending-line-1" class="ending-line hidden">"I kept running because I thought you were waiting for me."</p>
+            <p id="ending-line-2" class="ending-line hidden">"Some distances cannot be crossed."</p>
+            <p id="ending-line-3" class="ending-line hidden emphasis">"Thank you for remembering her. Developer Rahali Akram"</p>
+          </div>
+
+          <div id="ending-actions" class="ending-actions hidden">
+            <div class="ending-stats">
+              <p id="ending-total-memories">Memories Recovered: 10 / 10</p>
+            </div>
+            <div class="ending-buttons">
+              <button id="btn-ending-replay-cinematic" class="menu-btn">REPLAY ENDING</button>
+              <button id="btn-ending-play-again" class="menu-btn primary">PLAY AGAIN</button>
+              <button id="btn-ending-level-select" class="menu-btn">LEVEL SELECT</button>
+              <button id="btn-ending-main-menu" class="menu-btn secondary">MAIN MENU</button>
+            </div>
+          </div>
+
+          <button id="btn-skip-ending" class="btn-text-skip hidden">Skip &rarr;</button>
+        </div>
+      </div>
+
+      <!-- CONFIRMATION MODAL -->
+      <div id="modal-confirm" class="screen-view hidden confirm-modal">
+        <div class="modal-card confirm-card">
+          <h3 id="confirm-title">Are you sure?</h3>
+          <p id="confirm-message">This will overwrite your current progress.</p>
+          <div class="confirm-actions">
+            <button id="btn-confirm-yes" class="menu-btn danger">CONFIRM</button>
+            <button id="btn-confirm-no" class="menu-btn secondary">CANCEL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROTATE DEVICE NOTICE (MOBILE PORTRAIT HELPER) -->
+      <div id="portrait-hint" class="portrait-hint hidden">
+        <div class="portrait-hint-content">
+          <div class="phone-rotate-icon">&#128241;</div>
+          <p>For the most cinematic experience, please rotate your device to landscape.</p>
+          <button id="btn-dismiss-portrait" class="btn-text-small">Continue in Portrait</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/save-system.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
